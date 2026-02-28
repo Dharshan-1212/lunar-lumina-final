@@ -12,7 +12,6 @@ function Profile() {
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
-    displayName: "",
     username: ""
   });
 
@@ -25,7 +24,6 @@ function Profile() {
             const data = userDoc.data();
             setUserData(data);
             setFormData({
-              displayName: data.displayName || "",
               username: data.username || ""
             });
           }
@@ -42,15 +40,19 @@ function Profile() {
 
   const handleUpdateProfile = async () => {
     try {
+      const trimmedUsername = (formData.username || "").trim();
+      if (!trimmedUsername) {
+        alert("Username cannot be empty.");
+        return;
+      }
+
       await updateDoc(doc(db, "users", user.uid), {
-        displayName: formData.displayName,
-        username: formData.username
+        username: trimmedUsername
       });
       
       setUserData({
         ...userData,
-        displayName: formData.displayName,
-        username: formData.username
+        username: trimmedUsername
       });
       
       setEditMode(false);
@@ -139,17 +141,9 @@ function Profile() {
             <div>
               <input
                 type="text"
-                placeholder="Display Name"
-                value={formData.displayName}
-                onChange={(e) => setFormData({...formData, displayName: e.target.value})}
-                style={inputStyle}
-              />
-              
-              <input
-                type="text"
                 placeholder="Username"
                 value={formData.username}
-                onChange={(e) => setFormData({...formData, username: e.target.value})}
+                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                 style={inputStyle}
               />
               
@@ -168,10 +162,7 @@ function Profile() {
                 <strong>Email:</strong> {user?.email}
               </p>
               <p style={{ marginBottom: '10px', fontSize: '16px' }}>
-                <strong>Display Name:</strong> {userData?.displayName || 'Not set'}
-              </p>
-              <p style={{ marginBottom: '10px', fontSize: '16px' }}>
-                <strong>Username:</strong> @{userData?.username || 'Not set'}
+                <strong>Username:</strong> {userData?.username || 'Not set'}
               </p>
               <p style={{ marginBottom: '20px', fontSize: '16px' }}>
                 <strong>Member Since:</strong> {userData?.createdAt?.toDate()?.toLocaleDateString() || 'Unknown'}

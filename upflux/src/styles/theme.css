@@ -1,0 +1,210 @@
+/* ===============================
+   🌙 Lunar Lumina - Light Theme
+================================ */
+
+:root {
+  --primary-blue: #2563eb;
+  --success-green: #16a34a;
+  --warning-yellow: #facc15;
+  --danger-red: #dc2626;
+
+  --bg-main: #f9fafb;
+  --bg-card: #ffffff;
+  --border-light: #e5e7eb;
+
+  --text-dark: #111827;
+  --text-muted: #6b7280;
+
+  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-dark);
+  transition: background 0.3s ease;
+}
+
+/* ===============================
+   🧩 Layout
+================================ */
+
+.container {
+  padding: 40px;
+  max-width: 1100px;
+  margin: auto;
+}
+
+/* ===============================
+   🃏 Cards
+================================ */
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* ===============================
+   🔘 Buttons
+================================ */
+
+.btn {
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+.btn-primary {
+  background: var(--primary-blue);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #1e40af;
+  transform: scale(1.05);
+}
+
+.btn-success {
+  background: var(--success-green);
+  color: white;
+}
+
+.btn-danger {
+  background: var(--danger-red);
+  color: white;
+}
+
+/* ===============================
+   📊 Status Colors
+================================ */
+
+.status-positive {
+  color: var(--success-green);
+  font-weight: 600;
+}
+
+.status-moderate {
+  color: #ca8a04;
+  font-weight: 600;
+}
+
+.status-negative {
+  color: var(--danger-red);
+  font-weight: 600;
+}
+
+/* ===============================
+   📈 Charts Section
+================================ */
+
+.chart-container {
+  background: white;
+  border-radius: 14px;
+  padding: 20px;
+  margin-top: 30px;
+  box-shadow: var(--shadow-soft);
+}
+
+/* ===============================
+   🎯 XP Level Card
+================================ */
+
+.level-box {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 12px;
+  background: linear-gradient(
+    135deg,
+    var(--primary-blue),
+    #3b82f6
+  );
+  color: white;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+/* ===============================
+   💡 Popup Suggestion
+================================ */
+
+.popup {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: white;
+  border-left: 6px solid var(--primary-blue);
+  padding: 18px;
+  border-radius: 10px;
+  box-shadow: var(--shadow-soft);
+  animation: slideUp 0.4s ease forwards;
+}
+
+.popup-success {
+  border-left-color: var(--success-green);
+}
+
+.popup-warning {
+  border-left-color: var(--warning-yellow);
+}
+
+.popup-danger {
+  border-left-color: var(--danger-red);
+}
+
+/* ===============================
+   ✨ Animations
+================================ */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ===============================
+   📱 Responsive
+================================ */
+
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+}

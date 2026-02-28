@@ -29,8 +29,12 @@ function Home() {
           This improves confidence, academic performance, and long-term career readiness."
         </p>
       </div>
-      <div style={{ marginTop: '30px' }}>
-        {!user && <Link to="/login" style={buttonStyle}>Login</Link>}
+      <div style={{ marginTop: '30px', display: 'flex', gap: '15px', justifyContent: 'center', flexWrap: 'wrap' }}>
+        {user ? (
+          <Link to="/dashboard" style={buttonStyle}>Go to Dashboard</Link>
+        ) : (
+          <Link to="/login" style={buttonStyle}>Login</Link>
+        )}
       </div>
     </div>
   );

@@ -103,7 +103,7 @@ function Sidebar({ isOpen, onClose }) {
         >
           📝 Quiz
         </div>
-        
+
         <div
           style={menuItemStyle}
           onClick={() => handleNavigation('/performance')}
@@ -112,7 +112,16 @@ function Sidebar({ isOpen, onClose }) {
         >
           📈 Performance
         </div>
-        
+
+        <div
+          style={menuItemStyle}
+          onClick={() => handleNavigation('/leaderboard')}
+          onMouseEnter={(e) => e.target.style.backgroundColor = '#f3f4f6'}
+          onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+        >
+          🏆 Leaderboard
+        </div>
+
         <div
           style={logoutStyle}
           onClick={handleLogout}

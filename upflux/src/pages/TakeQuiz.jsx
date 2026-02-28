@@ -1,4 +1,5 @@
 import { useState, useContext, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import questions from "../data/programmingQuestions";
 import { addDoc, collection, serverTimestamp, query, where, orderBy, getDocs, limit } from "firebase/firestore";
 import { db } from "../services/firebase";
@@ -6,6 +7,7 @@ import { AuthContext } from "../context/AuthContext";
 
 function TakeQuiz() {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   // ---------- NORMAL QUIZ STATES ----------
   const [selectedTopic, setSelectedTopic] = useState("");
@@ -336,6 +338,23 @@ console.log(selectedTopic, selectedDifficulty);
         )}
 
         {analysis?.error && <p>Analysis failed. Check backend.</p>}
+
+        <div style={{ marginTop: "24px" }}>
+          <button
+            onClick={() => navigate("/dashboard")}
+            style={{
+              padding: "10px 20px",
+              borderRadius: "6px",
+              border: "none",
+              backgroundColor: "#6366f1",
+              color: "white",
+              cursor: "pointer",
+              fontWeight: "bold"
+            }}
+          >
+            Next
+          </button>
+        </div>
       </div>
     );
   }

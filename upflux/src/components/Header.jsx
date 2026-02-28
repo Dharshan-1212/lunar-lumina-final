@@ -76,8 +76,10 @@ function Header({ onMenuClick }) {
       <h1 style={titleStyle}>Dashboard</h1>
       
       <div style={userSectionStyle}>
-        <span style={usernameStyle}>@{username || 'Loading...'}</span>
-        
+        <span style={usernameStyle}>
+          {username || 'Set your username in Profile'}
+        </span>
+
         <div style={hamburgerStyle} onClick={onMenuClick}>
           <div style={lineStyle}></div>
           <div style={lineStyle}></div>

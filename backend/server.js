@@ -1,5 +1,13 @@
 require("dotenv").config();
 
+if (!process.env.GROQ_API_KEY) {
+  console.error("\n❌ GROQ_API_KEY is missing!");
+  console.error("Create a .env file in the backend folder with:");
+  console.error("  GROQ_API_KEY=your_key_here\n");
+  console.error("Get a free API key at: https://console.groq.com/keys\n");
+  process.exit(1);
+}
+
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");

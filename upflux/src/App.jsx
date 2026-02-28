@@ -6,6 +6,7 @@ import TakeQuiz from "./pages/TakeQuiz.jsx";
 import History from "./pages/History.jsx";
 import Profile from "./pages/Profile.jsx";
 import Performance from "./pages/Performance.jsx";
+import Leaderboard from "./pages/Leaderboard.jsx";
 import ProtectedRoute from "./components/layout/ProtectedRoute";
 
 function App() {
@@ -55,6 +56,15 @@ function App() {
         element={
           <ProtectedRoute>
             <Performance />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/leaderboard"
+        element={
+          <ProtectedRoute>
+            <Leaderboard />
           </ProtectedRoute>
         }
       />
