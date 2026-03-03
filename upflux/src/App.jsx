@@ -9,6 +9,7 @@ import Performance from "./pages/Performance.jsx";
 import Leaderboard from "./pages/Leaderboard.jsx";
 import AITutor from "./pages/AITutor.jsx";
 import Challenges from "./pages/Challenges.jsx";
+import StudyPlanner from "./pages/StudyPlanner.jsx";
 import ProtectedRoute from "./components/layout/ProtectedRoute";
 
 function App() {
@@ -85,6 +86,15 @@ function App() {
         element={
           <ProtectedRoute>
             <Challenges />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/study-planner"
+        element={
+          <ProtectedRoute>
+            <StudyPlanner />
           </ProtectedRoute>
         }
       />

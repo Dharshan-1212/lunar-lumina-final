@@ -141,6 +141,24 @@ function Sidebar({ isOpen, onClose }) {
         </div>
 
         <div
+          style={menuItemStyle}
+          onClick={() => handleNavigation('/challenges')}
+          onMouseEnter={(e) => e.target.style.backgroundColor = '#f3f4f6'}
+          onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+        >
+          🎮 Challenges
+        </div>
+
+        <div
+          style={menuItemStyle}
+          onClick={() => handleNavigation('/study-planner')}
+          onMouseEnter={(e) => e.target.style.backgroundColor = '#f3f4f6'}
+          onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+        >
+          📚 Study Planner
+        </div>
+
+        <div
           style={logoutStyle}
           onClick={handleLogout}
           onMouseEnter={(e) => e.target.style.backgroundColor = '#fef2f2'}

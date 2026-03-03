@@ -1,4 +1,3 @@
-import emailjs from "@emailjs/browser";
 import {
   collection,
   doc,
@@ -14,13 +13,7 @@ import {
 import { db } from "./firebase";
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
-
-const EMAILJS_PUBLIC_KEY =
-  import.meta.env.VITE_EMAILJS_PUBLIC_KEY || "xBMraL6peFzfYsbjz";
-const EMAILJS_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-const TEMPLATE_PLATEAU = import.meta.env.VITE_EMAILJS_TEMPLATE_PLATEAU;
-const TEMPLATE_DAILY = import.meta.env.VITE_EMAILJS_TEMPLATE_DAILY;
-// Streak email deferred (requires premium)
+const API_BASE = "http://localhost:5000";
 
 function toDate(value) {
   if (!value) return null;
@@ -55,33 +48,42 @@ function deriveTopicBuckets(topics = {}) {
   return { weakTopics, strongTopics };
 }
 
+const EMAIL_TYPE_LABELS = {
+  plateau: "Plateau Detection Alert",
+  streak: "Streak Loss Warning",
+  dailySummary: "Daily Performance Summary",
+};
+
 export function generateEmailContent(type, userData) {
   const username = userData.username || "Learner";
   const weakTopics = userData.latestQuizAttempt?.weakTopics || [];
   const weakTopicsText =
     weakTopics.length > 0 ? weakTopics.join(", ") : "No major weak topics detected";
   const streakDays = Number(userData.streakDays || 0);
-  const score = Number(userData.latestQuizAttempt?.score || 0);
+  const score = Number(userData.latestQuizAttempt?.score ?? 0);
   const velocity = userData.learningVelocity ?? "N/A";
   const riskLevel = userData.riskLevel || "Unknown";
 
   if (type === "plateau") {
     return {
-      subject: "Action Needed: Break Your Learning Plateau",
-      message: `Hi ${username}, your recent progress indicates a plateau.\nFocus on these weak topics: ${weakTopicsText}.\nTake one focused quiz and one revision session today to regain momentum.`,
+      email_title: "Action Needed: Break Your Learning Plateau",
+      email_message: `Your recent progress indicates a plateau. Focus on your weak topics and take one focused quiz plus a revision session today to regain momentum.`,
+      dynamic_content: `Weak topics: ${weakTopicsText}\nSuggested action: Take a focused quiz on one weak topic and one short revision session.`,
     };
   }
 
   if (type === "streak") {
     return {
-      subject: "Streak Alert: Keep Your Momentum Alive",
-      message: `Hi ${username}, your learning streak is about to break.\nCurrent streak: ${streakDays} day${streakDays === 1 ? "" : "s"}.\nComplete a quick quiz today to keep the streak active.`,
+      email_title: "Streak Alert: Keep Your Momentum Alive",
+      email_message: `Your learning streak is about to break. Complete a quick quiz today to keep the streak active.`,
+      dynamic_content: `Current streak: ${streakDays} day${streakDays === 1 ? "" : "s"}.\nAction: Complete any quiz today to maintain your streak.`,
     };
   }
 
   return {
-    subject: "Your Daily Learning Summary",
-    message: `Hi ${username}, here is your latest learning summary:\nScore: ${score}\nLearning Velocity: ${velocity}\nRisk Level: ${riskLevel}\nWeak Topics: ${weakTopicsText}\nGreat job staying consistent.`,
+    email_title: "Your Daily Learning Summary",
+    email_message: `Here is your latest learning summary. Great job staying consistent.`,
+    dynamic_content: `Score: ${score}\nLearning Velocity: ${velocity}\nRisk Level: ${riskLevel}\nWeak Topics: ${weakTopicsText}`,
   };
 }
 
@@ -167,51 +169,50 @@ export async function sendEmailAlert(user) {
   const emailType = determineEmailType(userData);
   if (!emailType) return { sent: false, reason: "no_email_type" };
 
-  // Streak email deferred (requires premium)
-  if (emailType === "streak") return { sent: false, reason: "streak_deferred" };
-
   if (!canSendEmail(userData.lastEmailSent)) {
     return { sent: false, reason: "cooldown_active" };
   }
 
-  const templateId =
-    emailType === "plateau" ? TEMPLATE_PLATEAU : TEMPLATE_DAILY;
-  if (!EMAILJS_SERVICE_ID || !templateId || !EMAILJS_PUBLIC_KEY) {
-    console.warn(
-      "EmailJS is not fully configured. Set VITE_EMAILJS_SERVICE_ID and template IDs (PLATEAU, DAILY)."
-    );
-    return { sent: false, reason: "emailjs_not_configured" };
-  }
-
   const content = generateEmailContent(emailType, userData);
-  const templateParams = {
-    to_name: userData.username,
-    to_email: userData.email,
-    email: userData.email,
-    subject: content.subject,
-    message: content.message,
-    email_type: emailType,
-    weak_topics: (userData.latestQuizAttempt?.weakTopics || []).join(", "),
-    streak_days: String(userData.streakDays || 0),
-    score: String(userData.latestQuizAttempt?.score || 0),
-    learning_velocity:
-      userData.learningVelocity == null ? "N/A" : String(userData.learningVelocity),
-    risk_level: userData.riskLevel || "Unknown",
+  const payload = {
+    to: userData.email,
+    user_name: userData.username,
+    email_title: content.email_title,
+    email_message: content.email_message,
+    dynamic_content: content.dynamic_content,
+    email_type: EMAIL_TYPE_LABELS[emailType] || emailType,
   };
 
-  await emailjs.send(EMAILJS_SERVICE_ID, templateId, templateParams, {
-    publicKey: EMAILJS_PUBLIC_KEY,
-  });
+  try {
+    const res = await fetch(`${API_BASE}/send-alert-email`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
 
-  await setDoc(
-    doc(db, "users", user.uid),
-    {
-      lastEmailSent: serverTimestamp(),
-      lastEmailType: emailType,
-    },
-    { merge: true }
-  );
+    const data = await res.json();
 
-  return { sent: true, type: emailType };
+    if (!res.ok) {
+      console.error("Email Error:", data?.error || res.statusText);
+      return { sent: false, reason: "backend_error" };
+    }
+
+    if (!data.success) {
+      return { sent: false, reason: "send_failed" };
+    }
+
+    await setDoc(
+      doc(db, "users", user.uid),
+      {
+        lastEmailSent: serverTimestamp(),
+        lastEmailType: emailType,
+      },
+      { merge: true }
+    );
+
+    return { sent: true, type: emailType };
+  } catch (err) {
+    console.error("Email Error:", err.message);
+    return { sent: false, reason: "network_error" };
+  }
 }
-

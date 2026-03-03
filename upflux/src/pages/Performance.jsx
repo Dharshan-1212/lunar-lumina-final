@@ -4,6 +4,7 @@ import { db } from "../services/firebase";
 import { AuthContext } from "../context/AuthContext";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
+import { studyCurriculum, topicToCategory } from "../data/studyCurriculum";
 import {
   LineChart,
   Line,
@@ -80,6 +81,15 @@ function Performance() {
     totalQuestions: stats.total,
     attempts: stats.attempts
   })).sort((a, b) => b.accuracy - a.accuracy);
+
+  const weakTopics = topicData.filter((t) => parseFloat(t.accuracy) < 70);
+  const weakTopicStudyPlan = weakTopics.flatMap((wt) => {
+    const categoryId = topicToCategory[wt.topic];
+    if (!categoryId) return [];
+    const section = studyCurriculum.find((s) => s.id === categoryId);
+    if (!section) return [];
+    return section.topics.map((t) => ({ ...t, weakTopic: wt.topic }));
+  });
 
   if (loading) {
     return (
@@ -246,6 +256,56 @@ function Performance() {
                   </tbody>
                 </table>
               </div>
+            </div>
+          </div>
+        )}
+
+        {weakTopics.length > 0 && weakTopicStudyPlan.length > 0 && (
+          <div style={{ ...cardStyle, borderLeft: '4px solid #f59e0b', backgroundColor: '#fffbeb' }}>
+            <h2 style={{ marginBottom: '12px', color: '#92400e' }}>📚 Suggested Study Plan (Weak Topics)</h2>
+            <p style={{ color: '#b45309', marginBottom: '20px', fontSize: '14px' }}>
+              Focus on these resources for topics where you scored below 70%: {weakTopics.map((t) => t.topic).join(", ")}
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {weakTopicStudyPlan.map((item, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '12px 16px',
+                    backgroundColor: '#fff',
+                    borderRadius: '8px',
+                    border: '1px solid #fde68a',
+                  }}
+                >
+                  <div>
+                    <span style={{ fontWeight: 600, color: '#1f2937' }}>{item.name}</span>
+                    <span style={{ fontSize: '12px', color: '#6b7280', marginLeft: '8px' }}>
+                      (for {item.weakTopic})
+                    </span>
+                    <div style={{ fontSize: '13px', color: '#6b7280', marginTop: '4px' }}>{item.description}</div>
+                  </div>
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      padding: '8px 16px',
+                      backgroundColor: '#f59e0b',
+                      color: '#fff',
+                      borderRadius: '6px',
+                      textDecoration: 'none',
+                      fontWeight: 600,
+                      fontSize: '13px',
+                      flexShrink: 0,
+                    }}
+                  >
+                    Study →
+                  </a>
+                </div>
+              ))}
             </div>
           </div>
         )}
