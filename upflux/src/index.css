@@ -1439,6 +1439,175 @@ html {
 
 
 /* ===============================
+   🎬 DASHBOARD ANIMATIONS
+================================ */
+
+@keyframes dashboardFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes dashboardSlideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.15); }
+  50% { box-shadow: 0 0 40px rgba(99, 102, 241, 0.3); }
+}
+
+@keyframes shimmerBar {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dash-gradient-text {
+  background: linear-gradient(135deg, #4F46E5, #7C3AED, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dash-card-hover {
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.dash-card-hover:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.12);
+}
+
+.dash-chart-tooltip {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(99, 102, 241, 0.2) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(99, 102, 241, 0.15) !important;
+  padding: 12px 16px !important;
+}
+
+.dash-insight-enter {
+  animation: dashboardSlideUp 0.4s ease both;
+}
+.dash-insight-enter:nth-child(1) { animation-delay: 0.05s; }
+.dash-insight-enter:nth-child(2) { animation-delay: 0.1s; }
+.dash-insight-enter:nth-child(3) { animation-delay: 0.15s; }
+.dash-insight-enter:nth-child(4) { animation-delay: 0.2s; }
+.dash-insight-enter:nth-child(5) { animation-delay: 0.25s; }
+.dash-insight-enter:nth-child(6) { animation-delay: 0.3s; }
+
+/* ===============================
+   💬 AI TUTOR CHAT ANIMATIONS
+================================ */
+
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(8px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40%, 43% {
+    transform: translateY(-10px);
+  }
+  70% {
+    transform: translateY(-5px);
+  }
+  90% {
+    transform: translateY(-2px);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-bounce {
+  animation: bounce 1s infinite;
+}
+
+/* Chat message animations */
+.chat-message-enter {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.chat-message-enter:nth-child(odd) {
+  animation-delay: 0.1s;
+}
+
+.chat-message-enter:nth-child(even) {
+  animation-delay: 0.2s;
+}
+
+/* Typing indicator specific animation */
+@keyframes typingDot {
+  0%, 60%, 100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-10px);
+  }
+}
+
+.typing-dot {
+  animation: typingDot 1.4s infinite;
+}
+
+.typing-dot:nth-child(1) { animation-delay: 0s; }
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+/* Chat container smooth scrolling */
+.chat-container {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: #e5e7eb transparent;
+}
+
+.chat-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+  background-color: #e5e7eb;
+  border-radius: 3px;
+}
+
+.chat-container::-webkit-scrollbar-thumb:hover {
+  background-color: #d1d5db;
+}
+
+/* Input focus glow effect */
+.input-glow:focus {
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1), 0 0 0 1px rgba(99, 102, 241, 0.5);
+}
+
+
+
+/* ===============================
 
    📱 RESPONSIVE
 
